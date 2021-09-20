@@ -1,44 +1,44 @@
 public class BankAccount {
-    protected double moneyInTheAccount;
+    private double balance;
 
-    public boolean withdrawMoney(double money){
+    public boolean isWithdrawMoney(double money){
         if(enoughMoney(money)){
-            moneyInTheAccount -= money;
+            balance -= money;
             return true;
         }
         return false;
     }
 
     protected boolean enoughMoney(double money){
-        if(moneyInTheAccount >= money) {
+        if(balance >= money) {
             return true;
         }
         return false;
     }
 
-    public boolean depositMoney(double money){
-        if(money > Double.MAX_VALUE - moneyInTheAccount){
+    public boolean isDepositMoney(double money){
+        if(money > Double.MAX_VALUE - balance){
             return false;
         }
-        moneyInTheAccount += money;
+        balance += money;
         return true;
     }
 
     public double fundBalance(){
-        return moneyInTheAccount;
+        return balance;
     }
 
-    public boolean send(BankAccount receiver, double amount){
-        double balance = moneyInTheAccount;
-        boolean debitingMoney = withdrawMoney(amount);
+    public boolean isSend(BankAccount receiver, double amount){
+        double money = balance;
+        boolean debitingMoney = isWithdrawMoney(amount);
         boolean sendMoney = false;
         if(debitingMoney){
-            sendMoney = receiver.depositMoney(amount);
+            sendMoney = receiver.isDepositMoney(amount);
         }
         if(sendMoney && debitingMoney){
             return true;
         }
-        moneyInTheAccount = balance;
+        balance = money;
         return false;
     }
 }
