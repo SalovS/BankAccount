@@ -1,44 +1,51 @@
 public class BankAccount {
-    private double balance;
-
-    public boolean isWithdrawMoney(double money){
-        if(enoughMoney(money)){
+    protected double balance;
+    public void withdrawMoney(double money){
+        if(isEnoughMoney(money)){
             balance -= money;
-            return true;
         }
-        return false;
     }
 
-    protected boolean enoughMoney(double money){
+    protected boolean isEnoughMoney(double money){
         if(balance >= money) {
             return true;
         }
         return false;
     }
 
-    public boolean isDepositMoney(double money){
+    protected boolean isDoesNotExceedMax(double money){
         if(money > Double.MAX_VALUE - balance){
             return false;
         }
-        balance += money;
         return true;
+    }
+
+    public void toUpBalance(double money){
+        if(isDoesNotExceedMax(money)){
+            balance += money;
+        }
     }
 
     public double fundBalance(){
         return balance;
     }
 
-    public boolean isSend(BankAccount receiver, double amount){
-        double money = balance;
-        boolean debitingMoney = isWithdrawMoney(amount);
+    protected boolean isSend(BankAccount receiver, double amount){
+        boolean debitingMoney = isEnoughMoney(amount);
         boolean sendMoney = false;
         if(debitingMoney){
-            sendMoney = receiver.isDepositMoney(amount);
+            sendMoney = receiver.isDoesNotExceedMax(amount);
         }
         if(sendMoney && debitingMoney){
             return true;
         }
-        balance = money;
         return false;
+    }
+
+    public void sendMoney(BankAccount receiver, double amount){
+        if(isSend(receiver, amount)){
+            withdrawMoney(amount);
+            receiver.toUpBalance(amount);
+        }
     }
 }

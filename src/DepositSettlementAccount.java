@@ -3,28 +3,37 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class DepositSettlementAccount extends BankAccount{
-    private double moneyInTheAccount;
     private Date dateOfDeposit;
     private final int ADDITIONAL_MONTHS = 1;
 
-    public boolean isDepositMoney(double money) {
-        if(money > Double.MAX_VALUE - moneyInTheAccount){
+    protected boolean isDoesNotExceedMax(double money) {
+        if(money > Double.MAX_VALUE - balance){
             return false;
         }
-        moneyInTheAccount += money;
-        dateOfDeposit = new Date();
         return true;
     }
 
-    public boolean isWithdrawMoney(double money){
-        if(enoughMoney(money) && isCheckingTheDate()){
-            moneyInTheAccount -= money;
+    public void toUpBalance(double money){
+        if (isDoesNotExceedMax(money)) {
+            balance += money;
+            dateOfDeposit = new Date();
+        }
+    }
+
+    protected boolean isWithdrawMoney(double money){
+        if(isEnoughMoney(money) && isCheckingTheDate()){
             return true;
         }
         return false;
     }
 
-    private boolean isCheckingTheDate(){
+    public void withdrawMoney(double money){
+        if(isWithdrawMoney(money)){
+            balance -= money;
+        }
+    }
+
+    protected boolean isCheckingTheDate(){ //////
         Date date = new Date();
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
